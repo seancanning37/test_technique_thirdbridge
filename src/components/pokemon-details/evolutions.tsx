@@ -37,7 +37,6 @@ const styles = StyleSheet.create({
   evolutionItem: {
     padding: 10,
     marginBottom: 5,
-    borderRadius: 8,
     backgroundColor: ThemeColors.WHITE,
   },
   evolutionName: {

@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
   moveItem: {
     padding: 10,
     marginBottom: 5,
+    backgroundColor: ThemeColors.WHITE,
   },
   moveName: {
     fontSize: 18,

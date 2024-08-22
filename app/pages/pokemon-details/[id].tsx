@@ -1,5 +1,13 @@
-import React from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  ScrollView,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
+} from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { ThemeColors } from '../../../src/constants';
 import usePokemonDetails from '../../../src/hooks/usePokemonDetails';
@@ -7,16 +15,22 @@ import PokemonDetailsHeader from '../../../src/components/pokemon-details/header
 import PokemonTypes from '../../../src/components/pokemon-details/types';
 import PokemonMoves from '../../../src/components/pokemon-details/moves';
 import PokemonEvolutions from '../../../src/components/pokemon-details/evolutions';
-import { Link } from 'expo-router';
 
 export default function Page() {
   const route = useRoute();
   const { id } = route.params as { id: string };
   const { pokemon, evolutions, loading, error } = usePokemonDetails(id);
+  const [imageSize, setImageSize] = useState(150);
+
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const offsetY = event.nativeEvent.contentOffset.y;
+    const newSize = offsetY > 100 ? 32 : 150;
+    setImageSize(newSize);
+  };
 
   if (loading) {
     return (
-      <View style={styles.container}>
+      <View style={styles.centeredContainer}>
         <ActivityIndicator size="large" />
       </View>
     );
@@ -24,54 +38,60 @@ export default function Page() {
 
   if (error) {
     return (
-      <View style={styles.container}>
+      <View style={styles.centeredContainer}>
         <Text style={styles.errorText}>{error}</Text>
       </View>
     );
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.headerContainer}>
-        <Link href="/pages/pokemons" asChild style={styles.backButton}>
-          <Text style={styles.backButtonText}>← Back</Text>
-        </Link>
-        {pokemon && <PokemonDetailsHeader pokemon={pokemon} />}
-      </View>
+    <View style={styles.container}>
       {pokemon && (
-        <>
-          <PokemonTypes pokemon={pokemon} />
-          <PokemonMoves pokemon={pokemon} />
-          {evolutions && evolutions.length > 0 && <PokemonEvolutions evolutions={evolutions} />}
-        </>
+        <View style={styles.headerContainer}>
+          <PokemonDetailsHeader pokemon={pokemon} imageSize={imageSize} />
+        </View>
       )}
-    </ScrollView>
+      <ScrollView
+        contentContainerStyle={styles.scrollViewContentContainer}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+      >
+        {pokemon && (
+          <>
+            <PokemonTypes pokemon={pokemon} />
+            <PokemonMoves pokemon={pokemon} />
+            {evolutions && evolutions.length > 0 && <PokemonEvolutions evolutions={evolutions} />}
+          </>
+        )}
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16,
+    flex: 1,
     backgroundColor: ThemeColors.WHITE,
   },
-  headerContainer: {
-    width: '100%',
-    position: 'relative',
+  centeredContainer: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 16,
+    backgroundColor: ThemeColors.WHITE,
   },
-  backButton: {
-    position: 'absolute',
-    left: 16,
-    top: 16,
-    paddingVertical: 8,
+  scrollViewContentContainer: {
+    paddingTop: 240,
     paddingHorizontal: 16,
+    paddingBottom: 16,
+    backgroundColor: ThemeColors.LIGHT_GRAY,
   },
-  backButtonText: {
-    fontSize: 16,
+  headerContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 10,
+    backgroundColor: ThemeColors.WHITE,
   },
   errorText: {
     color: 'red',
