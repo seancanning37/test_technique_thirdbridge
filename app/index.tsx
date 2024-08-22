@@ -1,16 +1,14 @@
-import { Link } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Link } from 'expo-router';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { Colors } from "../src/utils";
+import { ThemeColors } from '../src/constants';
 
 export default function Page() {
   return (
     <View style={styles.container}>
       <Link href="/pages/pokemons" asChild>
         <Pressable style={styles.pokemons}>
-          <Text style={styles.text}>
-            Pokemons
-          </Text>
+          <Text style={styles.text}>Pokemons</Text>
         </Pressable>
       </Link>
     </View>
@@ -20,18 +18,18 @@ export default function Page() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
+    alignItems: 'center',
     justifyContent: 'center',
   },
   pokemons: {
-    backgroundColor: Colors.WHITE,
+    backgroundColor: ThemeColors.WHITE,
     padding: 32,
-    borderColor: Colors.GRAY,
+    borderColor: ThemeColors.GRAY,
     borderWidth: 1,
   },
   text: {
     fontSize: 24,
-    fontWeight: "bold",
-    textTransform: "uppercase",
-  }
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+  },
 });
