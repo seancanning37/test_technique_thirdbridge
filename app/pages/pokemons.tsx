@@ -18,9 +18,9 @@ export default function Page() {
 
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useInfiniteQuery<
-      Pokemon,
+      Pokemon[],
       DefaultError,
-      InfiniteData<Pokemon, number>,
+      InfiniteData<Pokemon[], number>,
       string[],
       number
     >({
