@@ -9,10 +9,7 @@ interface IProps {
   isFirst?: boolean;
 }
 
-export const PokemonCard: React.FunctionComponent<IProps> = ({
-  item,
-  isFirst = false,
-}) => {
+export const PokemonCard: React.FunctionComponent<IProps> = ({ item, isFirst = false }) => {
   const id = item.url.split('/').filter(Boolean).pop();
 
   return (

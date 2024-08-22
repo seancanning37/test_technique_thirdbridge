@@ -8,8 +8,7 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "eslint '**/*.{js,jsx,ts,tsx}' --fix",
-    "format:fix": "prettier --write '**/*.{js,jsx,ts,tsx,json,css,md}'"
+    "format:fix": "npx eslint --fix '**/*.{js,jsx,ts,tsx}'"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.32.1",

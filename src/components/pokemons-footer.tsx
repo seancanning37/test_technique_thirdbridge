@@ -9,11 +9,7 @@ interface IProps {
   onPress: () => void;
 }
 
-export const PokemonsFooter: React.FunctionComponent<IProps> = ({
-  isHidden,
-  isLoading,
-  onPress,
-}) => {
+export const PokemonsFooter: React.FunctionComponent<IProps> = ({ isHidden, isLoading, onPress }) => {
   if (isHidden) return null;
 
   const handlePress = () => {
