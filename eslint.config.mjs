@@ -39,6 +39,6 @@ export default [
     },
   },
   {
-    ignores: ['node_modules/', '.expo/', 'babel.config.js'],
+    ignores: ['node_modules/', '.expo/', 'babel.config.js', 'jest.config.js'],
   },
 ];
