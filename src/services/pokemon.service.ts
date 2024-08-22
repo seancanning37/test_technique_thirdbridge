@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Pokemon, PokemonDetails } from "../models";
+import { Pokemon, PokemonDetails, PokemonSpecies, EvolutionChain } from "../models";
 
  class PokemonServiceImpl {
   async getPokemons(
@@ -11,8 +11,19 @@ import { Pokemon, PokemonDetails } from "../models";
       );
     return response.data.results;
   }
+  
   async getPokemonById(id: string): Promise<PokemonDetails> {
     const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`);
+    return response.data;
+  }
+
+  async getPokemonSpeciesById(id: string): Promise<PokemonSpecies> {
+    const response = await axios.get(`https://pokeapi.co/api/v2/pokemon-species/${id}`);
+    return response.data;
+  }
+
+  async getEvolutionChain(url: string): Promise<EvolutionChain> {
+    const response = await axios.get(url);
     return response.data;
   }
 }
