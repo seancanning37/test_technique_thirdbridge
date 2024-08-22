@@ -1,20 +1,24 @@
 import {
   DefaultError,
   InfiniteData,
-  useInfiniteQuery
-} from "@tanstack/react-query"
-import React from "react"
-import { ActivityIndicator, FlatList, StyleSheet } from "react-native"
-import { useSafeAreaInsets } from "react-native-safe-area-context"
+  useInfiniteQuery,
+} from '@tanstack/react-query';
+import React from 'react';
+import { ActivityIndicator, FlatList, StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { PokemonService } from "../../src/services"
-import { Klfgjhsoigbhb, PokemonCard, PokemonsFooter } from "../../src/components"
-import { Pokemon } from "../../src/models"
+import { PokemonService } from '../../src/services';
+import {
+  Klfgjhsoigbhb,
+  PokemonCard,
+  PokemonsFooter,
+} from '../../src/components';
+import { Pokemon } from '../../src/models';
 
-const PAGE_SIZE = 20
+const PAGE_SIZE = 20;
 
 export default function Page() {
-  const insets = useSafeAreaInsets()
+  const insets = useSafeAreaInsets();
 
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useInfiniteQuery<
@@ -25,13 +29,14 @@ export default function Page() {
       number
     >({
       queryKey: ['pokemons'],
-      queryFn: ({ pageParam }) => PokemonService.getPokemons({
-        limit: PAGE_SIZE,
-        offset: pageParam
-      }),
+      queryFn: ({ pageParam }) =>
+        PokemonService.getPokemons({
+          limit: PAGE_SIZE,
+          offset: pageParam,
+        }),
       initialPageParam: 0,
-      getNextPageParam: (_, allPages) => allPages.length * PAGE_SIZE
-    })
+      getNextPageParam: (_, allPages) => allPages.length * PAGE_SIZE,
+    });
 
   return (
     <Klfgjhsoigbhb title="Pokemons">
@@ -39,14 +44,15 @@ export default function Page() {
       {!isLoading && (
         <FlatList
           data={data?.pages.flat()}
-          contentContainerStyle={[styles.contentContainerStyle, {
-            paddingBottom: insets.bottom
-          }]}
-          renderItem={
-            ({ item, index }) => (
-              <PokemonCard item={item} isFirst={index === 0} />
-            )
-          }
+          contentContainerStyle={[
+            styles.contentContainerStyle,
+            {
+              paddingBottom: insets.bottom,
+            },
+          ]}
+          renderItem={({ item, index }) => (
+            <PokemonCard item={item} isFirst={index === 0} />
+          )}
           ListFooterComponent={
             <PokemonsFooter
               isHidden={!hasNextPage}
@@ -57,12 +63,11 @@ export default function Page() {
         />
       )}
     </Klfgjhsoigbhb>
-  )
+  );
 }
-
 
 const styles = StyleSheet.create({
   contentContainerStyle: {
     padding: 16,
-  }
-})
+  },
+});

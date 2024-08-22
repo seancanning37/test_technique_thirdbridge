@@ -1,26 +1,26 @@
 export type Pokemon = {
-  name: string
-  url: string
-}
+  name: string;
+  url: string;
+};
 
 export type PokemonDetails = Omit<Pokemon, 'url'> & {
-  id: number
+  id: number;
   sprites: {
-    front_default: string
-  }
+    front_default: string;
+  };
   types: Array<{
     type: {
-      name: string
-      url: string
-    }
-  }>
+      name: string;
+      url: string;
+    };
+  }>;
   moves: Array<{
     move: {
-      name: string
-      url: string
-    }
-  }>
-}
+      name: string;
+      url: string;
+    };
+  }>;
+};
 
 export interface PokemonSpecies {
   evolution_chain: {

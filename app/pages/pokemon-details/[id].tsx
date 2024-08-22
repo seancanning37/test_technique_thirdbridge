@@ -1,15 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, Image, ScrollView, Linking, Pressable } from 'react-native';
-import { Link } from "expo-router"
-import { useRoute } from '@react-navigation/native'
-import { PokemonService } from '../../../src/services'
-import { EvolutionChain, PokemonDetails } from '../../../src/models'
-import { ThemeColors, typeColors } from '../../../src/constants'
-import { capitalizeText } from '../../../src/utils'
+import {
+  View,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  Image,
+  ScrollView,
+  Linking,
+  Pressable,
+} from 'react-native';
+import { Link } from 'expo-router';
+import { useRoute } from '@react-navigation/native';
+import { PokemonService } from '../../../src/services';
+import { EvolutionChain, PokemonDetails } from '../../../src/models';
+import { ThemeColors, typeColors } from '../../../src/constants';
+import { capitalizeText } from '../../../src/utils';
 
 export default function Page() {
   const [pokemon, setPokemon] = useState<PokemonDetails | null>(null);
-  const [evolutions, setEvolutions] = useState<Array<{ id: string; name: string }> | null>(null);
+  const [evolutions, setEvolutions] = useState<Array<{
+    id: string;
+    name: string;
+  }> | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -18,55 +30,69 @@ export default function Page() {
   const { id } = route.params as { id: string };
 
   useEffect(() => {
+    let isMounted = true;
+
     async function fetchData() {
       try {
-        const pokemonData = await PokemonService.getPokemonById(id)
-        setPokemon(pokemonData);
+        const pokemonData = await PokemonService.getPokemonById(id);
+        if (isMounted) setPokemon(pokemonData);
 
-        const speciesData = await PokemonService.getPokemonSpeciesById(id)
-        const evolutionChainUrl = speciesData.evolution_chain.url
+        const speciesData = await PokemonService.getPokemonSpeciesById(id);
+        const evolutionChainUrl = speciesData.evolution_chain.url;
 
-        const evolutionChain = await PokemonService.getEvolutionChain(evolutionChainUrl)
+        const evolutionChain =
+          await PokemonService.getEvolutionChain(evolutionChainUrl);
 
-        const evolutionsList = parseEvolutionChain(evolutionChain.chain, id)
-        setEvolutions(evolutionsList)
-
-        setLoading(false);
-      } catch (error) {
-        setError('Failed to load Pokémon details');
-        setLoading(false);
+        const evolutionsList = parseEvolutionChain(evolutionChain.chain, id);
+        if (isMounted) setEvolutions(evolutionsList);
+      } catch {
+        if (isMounted) setError('Failed to load Pokémon details');
+      } finally {
+        if (isMounted) setLoading(false);
       }
     }
 
     fetchData();
+
+    return () => {
+      isMounted = false;
+    };
   }, [id]);
 
-  const parseEvolutionChain = (chain: EvolutionChain['chain'], currentId: string): Array<{ id: string; name: string }> => {
+  const parseEvolutionChain = (
+    chain: EvolutionChain['chain'],
+    currentId: string
+  ): Array<{ id: string; name: string }> => {
     const evolutions: Array<{ id: string; name: string }> = [];
-  
+
     function extractEvolutions(evolutionData: EvolutionChain['chain']) {
       const speciesUrlParts = evolutionData.species.url.split('/');
       const speciesId = speciesUrlParts[speciesUrlParts.length - 2];
-  
+
       if (speciesId !== currentId) {
         evolutions.push({
           id: speciesId,
           name: capitalizeText(evolutionData.species.name),
         });
       }
-  
+
       if (evolutionData.evolves_to.length > 0) {
-        evolutionData.evolves_to.forEach((nextEvolution: EvolutionChain['chain']) => extractEvolutions(nextEvolution));
+        evolutionData.evolves_to.forEach(
+          (nextEvolution: EvolutionChain['chain']) =>
+            extractEvolutions(nextEvolution)
+        );
       }
     }
-  
+
     extractEvolutions(chain);
-  
+
     return evolutions;
   };
 
   const handleMovePress = (url: string) => {
-    Linking.openURL(url).catch((err) => console.error("Failed to open URL", err));
+    Linking.openURL(url).catch((err) =>
+      console.error('Failed to open URL', err)
+    );
   };
 
   if (loading) {
@@ -96,18 +122,24 @@ export default function Page() {
               style={styles.pokemonImage}
             />
           )}
-  
+
           <View style={styles.typesContainer}>
             {pokemon?.types.map((typeInfo, index) => (
               <View
                 key={index}
-                style={[styles.typeBadge, { backgroundColor: typeColors[typeInfo.type.name] || ThemeColors.GRAY }]}
+                style={[
+                  styles.typeBadge,
+                  {
+                    backgroundColor:
+                      typeColors[typeInfo.type.name] || ThemeColors.GRAY,
+                  },
+                ]}
               >
                 <Text style={styles.typeText}>{typeInfo.type.name}</Text>
               </View>
             ))}
           </View>
-  
+
           <View style={styles.movesContainer}>
             <Text style={styles.sectionTitle}>First 5 moves</Text>
             {pokemon?.moves.slice(0, 5).map((moveInfo, index) => (
@@ -116,12 +148,14 @@ export default function Page() {
                 onPress={() => handleMovePress(moveInfo.move.url)}
                 style={styles.moveItem}
               >
-                <Text style={styles.moveName}>{capitalizeText(moveInfo.move.name)}</Text>
+                <Text style={styles.moveName}>
+                  {capitalizeText(moveInfo.move.name)}
+                </Text>
                 <Text style={styles.moveUrl}>{moveInfo.move.url}</Text>
               </Pressable>
             ))}
           </View>
-  
+
           {evolutions && evolutions.length > 0 && (
             <View style={styles.evolutionsContainer}>
               <Text style={styles.sectionTitle}>Evolutions</Text>
@@ -133,7 +167,9 @@ export default function Page() {
                 >
                   <View>
                     <Text style={styles.evolutionName}>{evolution.name}</Text>
-                    <Text style={styles.evolutionUrl}>{`https://pokeapi.co/api/v2/pokemon/${evolution.id}/`}</Text>
+                    <Text
+                      style={styles.evolutionUrl}
+                    >{`https://pokeapi.co/api/v2/pokemon/${evolution.id}/`}</Text>
                   </View>
                 </Link>
               ))}
@@ -141,17 +177,12 @@ export default function Page() {
           )}
         </>
       )}
-  
-      {loading && (
-        <ActivityIndicator size="large" />
-      )}
-  
-      {error && (
-        <Text style={styles.errorText}>{error}</Text>
-      )}
+
+      {loading && <ActivityIndicator size="large" />}
+
+      {error && <Text style={styles.errorText}>{error}</Text>}
     </ScrollView>
   );
-  
 }
 
 const styles = StyleSheet.create({
@@ -160,7 +191,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
-    backgroundColor: ThemeColors.WHITE
+    backgroundColor: ThemeColors.WHITE,
   },
   pokemonName: {
     fontSize: 24,
@@ -208,7 +239,7 @@ const styles = StyleSheet.create({
     backgroundColor: ThemeColors.WHITE,
     padding: 10,
     marginBottom: 5,
-    borderColor: ThemeColors.GRAY
+    borderColor: ThemeColors.GRAY,
   },
   moveName: {
     fontSize: 18,

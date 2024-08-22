@@ -1,2 +1,2 @@
-export * from './type-colors'
-export * from './theme-colors'
+export * from './type-colors';
+export * from './theme-colors';
