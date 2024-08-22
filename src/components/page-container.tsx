@@ -3,7 +3,7 @@ import React, { FunctionComponent, PropsWithChildren } from "react"
 import { Pressable, StyleSheet, Text, View } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 
-import { Colors } from "../utils"
+import { ThemeColors } from "../constants"
 
 type Props = {
   title: string
@@ -43,9 +43,9 @@ const styles = StyleSheet.create({
     paddingVertical: 16
   },
   header: {
-    backgroundColor: Colors.WHITE,
+    backgroundColor: ThemeColors.WHITE,
     borderBottomWidth: 1,
-    borderColor: Colors.GRAY,
+    borderColor: ThemeColors.GRAY,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

@@ -1,7 +1,7 @@
 import React from "react"
 import { Pressable, StyleSheet, Text } from "react-native"
 
-import { Colors } from "../utils"
+import { ThemeColors } from "../constants"
 
 interface IProps {
   isHidden?: boolean
@@ -30,8 +30,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     margin: 16,
     padding: 16,
-    backgroundColor: Colors.PINK,
-    borderColor: Colors.GRAY,
+    backgroundColor: ThemeColors.PINK,
+    borderColor: ThemeColors.GRAY,
     borderWidth: 1,
   }
 })

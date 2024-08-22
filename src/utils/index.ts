@@ -1,1 +1,1 @@
-export * from './colors'
+export * from './capitalize-text'

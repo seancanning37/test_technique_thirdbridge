@@ -1,7 +1,7 @@
 import { Link } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import { Colors } from "../src/utils";
+import { ThemeColors } from "../src/constants";
 
 export default function Page() {
   return (
@@ -24,9 +24,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   pokemons: {
-    backgroundColor: Colors.WHITE,
+    backgroundColor: ThemeColors.WHITE,
     padding: 32,
-    borderColor: Colors.GRAY,
+    borderColor: ThemeColors.GRAY,
     borderWidth: 1,
   },
   text: {
