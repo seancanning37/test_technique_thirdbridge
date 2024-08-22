@@ -14,61 +14,56 @@ export default function PokemonDetailsHeader({ pokemon, imageSize }: PokemonDeta
   const isSmallImage = imageSize === 32;
 
   return (
-    <View style={styles.container}>
+    <View style={styles.headerContainer}>
       <View style={styles.headerRow}>
         <Link href="/pages/pokemons" asChild style={styles.backButton}>
-          <Text style={styles.backButtonText}>← Back</Text>
+          <Text style={styles.backButtonText}>← BACK</Text>
         </Link>
         <Text style={styles.pokemonName}>{capitalizeText(pokemon.name)}</Text>
-        <View style={[styles.imageContainer, isSmallImage && styles.imageContainerSmall]}>
-          {pokemon.sprites.front_default && (
-            <Image
-              source={{ uri: pokemon.sprites.front_default }}
-              style={[styles.pokemonImage, { width: imageSize, height: imageSize }]}
-            />
-          )}
-        </View>
+      </View>
+      <View style={[isSmallImage ? styles.imageContainerSmall : styles.imageContainerCenter]}>
+        {pokemon.sprites.front_default && (
+          <Image source={{ uri: pokemon.sprites.front_default }} style={[{ width: imageSize, height: imageSize }]} />
+        )}
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  headerContainer: {
+    width: '100%',
     backgroundColor: ThemeColors.WHITE,
+    padding: 16,
   },
   headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    width: '100%',
-    paddingHorizontal: 16,
     position: 'relative',
   },
   backButton: {
     position: 'absolute',
-    left: 16,
+    left: 0,
     justifyContent: 'center',
   },
   backButtonText: {
-    fontSize: 16,
+    fontSize: 15,
+    fontWeight: 'bold',
   },
   pokemonName: {
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
   },
-  imageContainer: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    left: 0,
+  imageContainerCenter: {
     alignItems: 'center',
   },
   imageContainerSmall: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
     alignItems: 'flex-end',
-  },
-  pokemonImage: {
-    marginBottom: 16,
+    padding: 16,
   },
 });
