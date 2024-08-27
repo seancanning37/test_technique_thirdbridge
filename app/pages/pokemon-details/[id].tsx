@@ -39,7 +39,7 @@ export default function Page() {
   if (error) {
     return (
       <View style={styles.centeredContainer}>
-        <Text style={styles.errorText}>{error}</Text>
+        <Text style={styles.errorText}>{error.message}</Text>
       </View>
     );
   }
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     paddingTop: 240,
     paddingHorizontal: 16,
     paddingBottom: 16,
-    backgroundColor: ThemeColors.LIGHT_GRAY,
+    backgroundColor: ThemeColors.LIST_BACKGROUND,
   },
   headerContainer: {
     position: 'absolute',
