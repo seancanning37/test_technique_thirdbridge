@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { PokemonService } from '../services';
-import { EvolutionChain, PokemonDetails } from '../models';
+import { PokemonDetails } from '../models';
+import { parseEvolutionChain } from '../utils';
 
 export default function usePokemonDetails(id: string) {
   const [pokemon, setPokemon] = useState<PokemonDetails | null>(null);
@@ -39,33 +40,6 @@ export default function usePokemonDetails(id: string) {
       isMounted = false;
     };
   }, [id]);
-
-  const parseEvolutionChain = (
-    chain: EvolutionChain['chain'],
-    currentId: string
-  ): Array<{ id: string; name: string }> => {
-    const evolutions: Array<{ id: string; name: string }> = [];
-
-    function extractEvolutions(evolutionData: EvolutionChain['chain']) {
-      const speciesUrlParts = evolutionData.species.url.split('/');
-      const speciesId = speciesUrlParts[speciesUrlParts.length - 2];
-
-      if (speciesId !== currentId) {
-        evolutions.push({
-          id: speciesId,
-          name: evolutionData.species.name,
-        });
-      }
-
-      if (evolutionData.evolves_to.length > 0) {
-        evolutionData.evolves_to.forEach((nextEvolution) => extractEvolutions(nextEvolution));
-      }
-    }
-
-    extractEvolutions(chain);
-
-    return evolutions;
-  };
 
   return { pokemon, evolutions, loading, error };
 }
