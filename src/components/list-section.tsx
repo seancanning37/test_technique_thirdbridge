@@ -49,6 +49,8 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 5,
     backgroundColor: ThemeColors.WHITE,
+    borderWidth: 1,
+    borderColor: ThemeColors.LIGHT_GRAY,
   },
   itemName: {
     fontSize: 18,
