@@ -1,45 +1,30 @@
-import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { PokemonService } from '../services';
-import { PokemonDetails } from '../models';
-import { parseEvolutionChain } from '../utils';
+import { parseEvolutionChain } from '../utils/';
 
 export default function usePokemonDetails(id: string) {
-  const [pokemon, setPokemon] = useState<PokemonDetails | null>(null);
-  const [evolutions, setEvolutions] = useState<Array<{
-    id: string;
-    name: string;
-  }> | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const pokemonQuery = useQuery({
+    queryKey: ['pokemon', id],
+    queryFn: () => PokemonService.getPokemonById(id),
+  });
 
-  useEffect(() => {
-    let isMounted = true;
+  const speciesQuery = useQuery({
+    queryKey: ['pokemonSpecies', id],
+    queryFn: () => PokemonService.getPokemonSpeciesById(id),
+    enabled: !!pokemonQuery.data,
+  });
 
-    const fetchData = async () => {
-      try {
-        const pokemonData = await PokemonService.getPokemonById(id);
-        if (isMounted) setPokemon(pokemonData);
+  const evolutionChainUrl = speciesQuery.data?.evolution_chain.url;
 
-        const speciesData = await PokemonService.getPokemonSpeciesById(id);
-        const evolutionChainUrl = speciesData.evolution_chain.url;
+  const evolutionQuery = useQuery({
+    queryKey: ['evolutionChain', evolutionChainUrl],
+    queryFn: () => PokemonService.getEvolutionChain(evolutionChainUrl!),
+    enabled: !!evolutionChainUrl,
+    select: (data) => parseEvolutionChain(data.chain, id),
+  });
 
-        const evolutionChain = await PokemonService.getEvolutionChain(evolutionChainUrl);
-        const evolutionsList = parseEvolutionChain(evolutionChain.chain, id);
+  const loading = pokemonQuery.isLoading || speciesQuery.isLoading || evolutionQuery.isLoading;
+  const error = pokemonQuery.error || speciesQuery.error || evolutionQuery.error;
 
-        if (isMounted) setEvolutions(evolutionsList);
-      } catch {
-        if (isMounted) setError('Failed to load Pokémon details');
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    };
-
-    fetchData();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [id]);
-
-  return { pokemon, evolutions, loading, error };
+  return { pokemon: pokemonQuery.data, evolutions: evolutionQuery.data, loading, error };
 }
